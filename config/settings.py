@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     # apps
     'authentication',
     'grocery',
-    'ingredients'
+    'ingredients',
+    'recipe'
 ]
 
 MIDDLEWARE = [
