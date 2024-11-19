@@ -1,5 +1,6 @@
 # views.py
 from datetime import timedelta
+import random
 from django.utils import timezone
 from rest_framework import generics, filters
 from rest_framework.response import Response
@@ -94,3 +95,19 @@ class UserFavoriteRecipesView(generics.ListAPIView):
 
     def get_serializer_context(self):
         return {'request': self.request}
+    
+class RecipeOfTheDayView(APIView):
+    """
+    Returns one random recipe as the recipe of the day.
+    """
+    def get(self, request):
+        recipe_count = Recipe.objects.count()
+        
+        if recipe_count == 0:
+            return Response({"error": "No recipes available"}, status=status.HTTP_404_NOT_FOUND)
+        
+        random_index = random.randint(0, recipe_count - 1)
+        random_recipe = Recipe.objects.all()[random_index]
+        
+        serializer = PopularRecipeSerializer(random_recipe, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)

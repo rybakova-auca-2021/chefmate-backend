@@ -5,6 +5,8 @@ from .models import GroceryItem
 from .serializers import GroceryItemSerializer
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
+from django.db.models import F
+
 
 
 # 1. Add a new grocery item
@@ -84,3 +86,30 @@ class DeleteAllGroceryItemsView(APIView):
     def delete(self, request):
         GroceryItem.objects.filter(user=request.user).delete()  # Filter by user
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class AddMultipleGroceryItemsView(APIView):
+    serializer_class = GroceryItemSerializer
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_description="Add multiple grocery items at once. If items with the same name are provided, they will be consolidated by summing their quantities.",
+        request_body=GroceryItemSerializer(many=True)
+    )
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, many=True)
+        if serializer.is_valid():
+            for item_data in serializer.validated_data:
+                item_name = item_data["name"]
+                item_quantity = int(item_data.get("quantity", 1))
+
+                grocery_item = GroceryItem.objects.filter(user=request.user, name=item_name).first()
+
+                if grocery_item:
+                    grocery_item.quantity = F('quantity') + item_quantity
+                    grocery_item.save()
+                else:
+                    GroceryItem.objects.create(user=request.user, **item_data)
+
+            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

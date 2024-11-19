@@ -1,6 +1,6 @@
 # urls.py
 from django.urls import path
-from .views import FilteredRecipeListView, PopularRecipesView, CuratedCollectionsView, RecipeDetailView, RecipeSearchView, RecipesByCollectionView, ToggleFavoriteView, UserFavoriteRecipesView
+from .views import FilteredRecipeListView, PopularRecipesView, CuratedCollectionsView, RecipeDetailView, RecipeOfTheDayView, RecipeSearchView, RecipesByCollectionView, ToggleFavoriteView, UserFavoriteRecipesView
 
 urlpatterns = [
     path('recipes/popular/<str:period>/', PopularRecipesView.as_view(), name='popular-recipes'),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('recipes/filter/', FilteredRecipeListView.as_view(), name='recipe-filter'),
     path('recipes/<int:recipe_id>/favorite/', ToggleFavoriteView.as_view(), name='add_to_favorite'),
     path('favorites/', UserFavoriteRecipesView.as_view(), name='user_favorite_recipes'),
+    path('recipe-of-the-day/', RecipeOfTheDayView.as_view(), name='recipe-of-the-day'),
 ]

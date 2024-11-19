@@ -9,4 +9,5 @@ urlpatterns = [
     path('view/', views.ViewAllGroceryItemsView.as_view(), name='view_all_grocery_items'),
     path('delete/<int:pk>/', views.DeleteGroceryItemView.as_view(), name='delete_grocery_item'),
     path('delete_all/', views.DeleteAllGroceryItemsView.as_view(), name='delete_all_grocery_items'),
+    path('add/groceries/', views.AddMultipleGroceryItemsView.as_view(), name='delete_all_grocery_items'),
 ]
