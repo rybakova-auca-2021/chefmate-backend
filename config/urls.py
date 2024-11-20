@@ -30,4 +30,5 @@ urlpatterns = [
     path('chefmate/grocery/', include('grocery.urls')),
     path('chefmate/ingredients/', include('ingredients.urls')),
     path('chefmate/recipe/', include('recipe.urls')),
+    path('chefmate/preferences/', include('preferences.urls')),
 ]

@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'authentication',
     'grocery',
     'ingredients',
-    'recipe'
+    'recipe',
+    'preferences'
 ]
 
 MIDDLEWARE = [
@@ -169,7 +170,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),  # Пример: установите время жизни токена
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=30),  # Пример: установите время жизни токена
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=30),  # Пример: установите время жизни для обновления токена
     'SLIDING_TOKEN_LIFETIME': timedelta(days=1),  # Пример: установите время жизни скользящего токена
     'SLIDING_TOKEN_REFRESH_GRACE_PERIOD': timedelta(days=7),  # Пример: установите период для обновления скользящего токена

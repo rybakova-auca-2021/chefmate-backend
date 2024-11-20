@@ -18,7 +18,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     profile_photo = models.URLField(blank=True, null=True)
     username = models.CharField(max_length=255, null=True)
-
+    preferred_cuisines = models.ManyToManyField('preferences.Cuisine', blank=True, related_name='users')
+    preferred_food = models.ManyToManyField('preferences.Food', blank=True, related_name='users')
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -26,7 +27,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return f"{self.first_name}"
+        return self.first_name or self.email
 
 
 class Coupon(models.Model):

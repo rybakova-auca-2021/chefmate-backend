@@ -3,10 +3,13 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 
+from preferences.models import Cuisine
+
 class Recipe(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     short_desc = models.CharField(max_length=255)
+    cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE, related_name='cuisine')
     time = models.CharField(max_length=50)
     image_url = models.URLField(max_length=200, blank=True, null=True)
     difficulty = models.CharField(max_length=50)
