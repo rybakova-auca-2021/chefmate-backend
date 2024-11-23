@@ -86,30 +86,31 @@ class RegisterWithEmailView(BaseRegisterView):
                               "пользователей, которые пытаются сделать заказ, но "
                               "требуется регистрация для выполнения этой операции. "
                               "После успешной регистрации, система создает новую "
-                              "запись пользователя и возвращает информацию о нем.",
+                              "запись пользователя и возвращает информацию о нем, "
+                              "включая токены и айди.",
     )
     def post(self, request):
         response = super().post(request)
 
         if response.status_code == status.HTTP_201_CREATED:
             user_data = response.data.get('user', {})
-
             user = User.objects.filter(email=user_data.get('email')).first()
 
             if user:
                 default_username = f"username{random.randint(1000, 9999)}"
                 user.username = default_username
-
-                user.profile_photo = 'https://i.ibb.co/m8CpW33/profile-pic.jpg'  
-
+                user.profile_photo = 'https://i.ibb.co/m8CpW33/profile-pic.jpg'
                 user.save()
+
+                refresh = RefreshToken.for_user(user)
 
                 response.data['user_id'] = user.id
                 response.data['username'] = user.username
-                response.data['profile_photo'] = user.profile_photo  
+                response.data['profile_photo'] = user.profile_photo
+                response.data['access_token'] = str(refresh.access_token)
+                response.data['refresh_token'] = str(refresh)
 
         return response
-
 
 class RegisterView(BaseRegisterView):
     serializer_class = RegisterUserSerializer
