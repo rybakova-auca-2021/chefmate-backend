@@ -19,22 +19,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 class PopularRecipesView(APIView):
     def get(self, request, period):
-        time_filter = timezone.now()
-        
-        # Adjust time filter based on period
-        if period == 'today':
-            time_filter -= timedelta(days=1)
-        elif period == 'week':
-            time_filter -= timedelta(weeks=1)
-        elif period == 'month':
-            time_filter -= timedelta(days=30)
-        else:
+        if period not in ['today', 'week', 'month']:
             return Response({"error": "Invalid period specified"}, status=400)
         
-        recipes = Recipe.objects.filter(created_at__gte=time_filter).order_by('-popularity')
+        recipes = Recipe.objects.filter(popularity=period).order_by('-popularity')
         
         serializer = PopularRecipeSerializer(recipes, many=True)
-        
         return Response(serializer.data)
 
 class CuratedCollectionsView(generics.ListAPIView):
@@ -145,3 +135,16 @@ class RecipeOfTheDayView(APIView):
         # Assuming PopularRecipeSerializer exists and is implemented correctly
         serializer = PopularRecipeSerializer(recipe_of_the_day, context={'request': request})
         return Response(serializer.data, status=200)
+
+class RecipesByCategoryView(generics.ListAPIView):
+    serializer_class = RecipeSerializer
+    queryset = Recipe.objects.all()
+
+    def get_queryset(self):
+        category = self.kwargs.get('category')
+        if category not in [choice[0] for choice in Recipe.CATEGORY_CHOICES]:
+            raise ValueError("Invalid category")
+        return Recipe.objects.filter(category=category)
+
+    def get_serializer_context(self):
+        return {'request': self.request}

@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'grocery',
     'ingredients',
     'recipe',
-    'preferences'
+    'preferences',
+    'plan'
 ]
 
 MIDDLEWARE = [

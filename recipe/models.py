@@ -6,6 +6,21 @@ from django.conf import settings
 from preferences.models import Cuisine
 
 class Recipe(models.Model):
+    CATEGORY_CHOICES = [
+        ('breakfast', 'Breakfast'),
+        ('lunch', 'Lunch'),
+        ('dinner', 'Dinner'),
+        ('snack', 'Snack'),
+        ('dessert', 'Dessert'),
+    ]
+
+    POPULARITY_PERIOD_CHOICES = [
+        ('today', 'Today'),
+        ('week', 'Week'),
+        ('month', 'Month'),
+        ('none', 'None'),  # Для случаев, если популярность не указана
+    ]
+
     name = models.CharField(max_length=255)
     description = models.TextField()
     short_desc = models.CharField(max_length=255)
@@ -20,13 +35,25 @@ class Recipe(models.Model):
     ingredients = models.TextField(help_text="Comma-separated list of ingredients")
     steps = models.TextField(help_text="Step-by-step cooking instructions")
     created_at = models.DateTimeField(auto_now_add=True)
-    popularity = models.IntegerField(default=0, help_text="Popularity score for sorting recipes")
     is_vegetarian = models.BooleanField(default=False)
     is_gluten_free = models.BooleanField(default=False)
     is_budget_friendly = models.BooleanField(default=False)
+    category = models.CharField(
+        max_length=50,
+        choices=CATEGORY_CHOICES,
+        default='lunch',
+        help_text="Category of the recipe",
+    )
+    popularity = models.CharField(
+        max_length=10,
+        choices=POPULARITY_PERIOD_CHOICES,
+        default='none',
+        help_text="Период популярности рецепта"
+    )
 
     def __str__(self):
         return self.name
+
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
